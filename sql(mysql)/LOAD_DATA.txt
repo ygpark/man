@@ -1,0 +1,11 @@
+﻿
+
+LOAD DATA LOW_PRIORITY LOCAL INFILE
+'D:\\Temp\\Sample_output\\_other_vhosts_access.log.1.parsed'
+REPLACE INTO TABLE `mylabs`.`test_weblog`
+FIELDS TERMINATED BY ‘\t'
+OPTIONALLY ENCLOSED BY '"' ESCAPED BY '"' LINES TERMINATED BY '\r\n’
+(`remote_host`, `remote_logname`, `remote_user`,
+`timestamp`, `method`, `url`, `http_ver`, `status`,
+`bytes_tx`, `referer`, `user_agent`, `logfile`)
+SET remote_host_int = inet_aton(remote_host);

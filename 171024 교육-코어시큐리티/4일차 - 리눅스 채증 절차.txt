@@ -1,0 +1,113 @@
+﻿1. 파티션 레이아웃 확인. USB 위치 확인
+
+	# sudo fdisk -l
+
+
+2. 마운트 할 디렉토리 만들기
+
+	#mkdir -m 777 usb
+	#sudo mount -t vfat /dev/sda1 usb
+
+
+1. 채증하기 
+
+	# sudo fls -f ext4 -r -m / /dev/sdb1 | sudo tee pms_body.txt > /dev/null
+
+		-m /: '/'루트 디렉토리부터 맥타임 바디 만들어주세요
+		sudo tee : 파이프라인은 로컬 권한이므로 tee 명령을 사용하여 파일로 저장
+
+	# sudo mactime -b pms_body.txt -z Asia/Seoul > pms_mactime.txt
+	# sudo mactime -b pms_body.txt -z Asia/Seoul | sudo tee pms_mactime.txt > /dev/null
+
+
+
+1. 로그파일들 하나로 모으기
+	리눅스는 sysLog가 로그를 남김.
+	따라서 sysLog 설정파일에 기록된 파일을 모두 수집해야함.
+	syslog는 포멧이 같기 때문에 하나의 파일로 합쳐서 보는 것이 좋음
+	
+	# cat syslog auth.log | sort > pms_log.txt
+	# cat syslog auth.log | sort | sudo tee pms_log.txt > /dev/null
+	
+	
+	
+	
+	
+1. 로그인 기록 보기
+
+	last -f /var/log/wtmp
+
+
+1. 압축된 로그 확인
+
+	- 사용법은 grep과 같음
+
+	zgrep 
+
+
+
+
+1. 열린 포트 확인하기
+
+	lsof -i
+
+
+1. 계정 조사
+	0:0  이면 루트권한....
+	# awk -F ':' '($3 == 0 & $4 == 0){print $0}' /etc/passwd
+
+
+
+
+1. history 파일 조사
+
+	해커가 하는 행위
+	# rm -f .bash_history
+	# ln -s /dev/null .bash_history
+
+
+	# find / -type l -name ".bash_history" -ls     # 심볼릭 링크인 history 찾기
+
+	# find / -type f -name ".bash_history" -ls     # 일반 파일인 history 찾기
+
+
+1. 자동실행 찾기
+
+	1. CRONTAB(cron table) 계정별로 실행
+
+		# crontab -l 
+
+		output: no crontab for root
+	
+	
+	2. init 스크립트 조사
+	
+	
+
+
+1. 데이터베이스 조사
+
+	SQL 시스템 명령어
+
+	MS-SQL	xp_cmdshell
+	MySQL	libudf_sys
+
+	------------------------------------
+	> mysql
+		select * from mysql.func;
+
+	--------------------------------------------
+	name      | ret | dl | type
+	--------------------------------------------
+	sys_get
+	sys_set
+	sys_exec
+	sys_eval
+	--------------------------------------------
+
+
+	> mysql
+		select * from sys_eval("ifconfig");    --> 실행가능
+
+	mactime에서 mysql의 
+	.mysql_history 찾아보기

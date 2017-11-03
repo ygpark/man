@@ -1,0 +1,102 @@
+﻿
+# Code injection
+
+## 코드인젝션 기법
+
+	- DLL injection
+		- SetWindowsHookEx()
+		- CreateRemoteThread()
+		- DLL Load Order Hijacking
+		- Ghost DLL injection
+
+	- Code injection
+		SeDebugPrivilege
+
+---------------------------------------------------------------
+## 코드인젝션 순서
+		
+1. 프로세스 워킹
+	- CreateToolHelp32SnapShot
+	- Process32First()
+	- 이름비교
+	- Process32Next()
+	
+2. 프로세스 핸들 구하기
+
+	- OpenProcess()
+	- OpenProcessToken()
+	- LookupTokenPrivilege()
+	- AdjustTokenProvilege()
+
+	
+3. 코드 가져오기
+	- Network
+	- Registry
+	- ADS
+	- ReadProcessMemory() - 자기자신을 읽어서 주입할 때 사용
+	- 저장된 코드
+
+4. 코드 주입
+
+	- WriteProcessMemory()
+	- CreateRemoteThread()
+
+	
+	
+------------------------------------------------------------------
+	
+	
+	
+## DLL 인젝선 순서
+
+1. CreateRemoteThread(hande, 실행할 코드 주소, 파라메터 주소...)
+	- 실행할 코드 주소: LoadLibrary()의 주소를 넘겨줌
+	- 파라메터 주소: "악성.dll"
+
+2. SetWindowHook() - 키로거 or DLL injection
+	- "이벤트큐를 처리하기전에 내가 먼저 볼께"
+
+
+
+----------------------------------------------------------------
+
+MFT
+
+$SI_ctime
+$FN_ctime
+
+이 두개가 일치해야 한다.
+
+
+MFT 구조
++------------------------------------------------------------
+| FILE | $SI         |  $FN         |  $DATA       | 0000000 |---> MFT entry 또는 MFT record
+| FILE | attribute   |  attribute   |  attribute   | 0000000 |---> 크기는 1k, 1024 byte
+| FILE | attribute   |  attribute   |  attribute   | 0000000 |
+| FILE | attribute   |  attribute   |  attribute   | 0000000 |
+
+
+attribute 종류
+-------------------------------------------------
+- $STANDARD_INFORMATION : 
+	- 탐색기에서 볼 수 있는 정보, MACE시간, entry가 수정된 시간
+    - 프로그램에서 시간 조작 가능
+						
+- $FILE_NAME (FN)
+	- 프로그램에서 시간 조작 불가
+	- Access time은 윈도우 vista 이후에 성능 이슈로 업데이트 하지 않음
+	- parent folder에 대한 정보
+	
+- $DATA
+	- 파일의 내용
+	- 파일의 사이즈가 
+
+- $INDEX_ROOT
+	- 폴더인 경우
+
+
+--------------------------------------------------------------
+- $Logfile은 바로 덤프뜨면 되고
+- $UsnJornal:$J 은 들어가서 덤프 뽑아야함... 왜냐하면 같은 inod 번호에 여러 파일이 들어갈 수 있어서
+콜론":" 으로 어느파일인지 구분
+

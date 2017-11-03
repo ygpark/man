@@ -1,0 +1,23 @@
+﻿# csv파일에서 가져오기
+
+## 사전작업
+
+csv파일 인코딩을 UTF-8로 바꿔야 한다.
+
+## 사용법
+
+	sqlite3.exe myDatabase.db
+	
+	CREATE TABLE log (date, status, ip, log);
+	.separator ','
+	.import  login.csv  log
+	
+	
+	CREATE TABLE whois (ip, country, isp, user);
+	.separator ','
+	.import  whois.csv whois
+	
+	
+	
+	--DROP TABLE log;
+	--DROP TABLE whois;

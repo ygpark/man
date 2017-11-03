@@ -1,0 +1,6 @@
+peepdf.py -i 00000.pdf
+
+> object 000
+
+
+> object 000 > dumpfilename

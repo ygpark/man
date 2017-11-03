@@ -1,0 +1,1 @@
+자동시작 : wmi repogitory

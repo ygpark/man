@@ -1,0 +1,23 @@
+
+# 아스키코드 문자열 출력
+
+	strings filenam.exe
+
+
+# 유니코드 문자열 출력 (윈도우는 안됨. 옵션 확인바람.)
+
+	# strings -e l filenam.exe
+
+		-e l : 리틀엔디안
+
+
+
+
+
+# 최소 문자열 3개이상
+
+	strings -n 3 filenam.exe
+
+
+# 코드인젝션 관련 API 검색하기
+	strings filename.exe | egrep '(CreateRemote|VirtualAlloc|WriteProcess|Process32|AdjustToken)'

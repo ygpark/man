@@ -1,0 +1,111 @@
+1. apache 설치
+
+	sudo apt-get install apache2;
+
+2. 아파치의 SSL 모듈을 활성화 한다.
+
+	sudo a2enmod ssl
+
+3. 아피치를 재시작 한다.
+
+	sudo service apache2 restart
+
+4. SSL 인증서 관련된 파일을 위치시킬 디렉토리를 만든다.
+
+
+4-1.private key, 인증서 한번에 만들기 (CSR 파일 만들기 건너뜀)
+
+
+	1) 작업 디렉토리 만들기 (안해도됨)
+	sudo mkdir /etc/apache2/ssl
+
+	2) 개인키 (private key) 와 인증서  한번에 만들기 
+	sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt
+	==>  apache.key (개인키), apache.crt (인증서)   총 2개 파일 만들어진다.
+	
+
+4-2.  private key 파일 만들고 --> CSR (인증요청서) 파일 만들고 --> 인증서 만들기
+
+	참고 : http://www.thegeekstuff.com/2011/03/install-apache2-ssl/
+	http://www.thegeekstuff.com/2009/07/linux-apache-mod-ssl-generate-key-csr-crt-file/
+
+	1) 개인키 (private key) 만들기 -- 여기서 만든 암호를 계속 사용한다.
+	openssl genrsa -des3 -out server.key 1024
+
+	2) CSR (인증요청서) 만들기
+	openssl req -new -key server.key -out server.csr
+
+	3) 인증서 만들기
+	openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+
+	===> server.key (개인키) , server.csr (CSR) , server.crt (인증서)   총 3개 파일 만들어진다.
+	; 암호 제거 안했으므로, 서버 기동시 마다 암호 넣어야 한다...
+
+
+
+4-3. private key 파일과 CSR 파일 동시에 만들고 --> 인증서 만들기
+
+	참고 : http://www.postgresql.org/docs/9.4/static/ssl-tcp.html#SSL-SERVER-FILES
+
+	1) 개인키 (private key) 와 CSR (인증요청서) 만들기만들기 -- 여기서 만든 암호를 계속 사용한다.
+	openssl req -new -text -out server.req
+
+	2)  암호 제거하기 -- 서버 기동시 암호 없어도 된다.
+	openssl rsa -in privkey.pem -out server.key
+
+	3) 인증서 만들기
+	openssl req -x509 -in server.req -text -key server.key -out server.crt
+
+
+	
+	
+	
+	
+5. /etc/apache2/ssl 디렉토리에 인증서 파일들을 위치시킨다. 파일들의 경로는 아래와 같다.
+
+	/etc/apache2/ssl/ca.pem
+	/etc/apache2/ssl/ssl.crt
+	/etc/apache2/ssl/ssl.key
+	/etc/apache2/ssl/sub.class1.server.ca.pem
+
+6. 보안을 위해서 디렉토리와 파일의 권한을 조정한다.
+
+디렉토리와 파일의 소유자는 root로 지정한다.
+
+	sudo chown -R root:root /etc/apache2/ssl;
+
+파일의 권한을 600(소유자만 읽기, 쓰기 허용)
+
+	sudo chmod 600 /etc/apache2/ssl/*.*
+
+디렉토리의 권한을 700(소유자만 읽기, 쓰기, 실행 허용)
+
+	sudo chmod 700 /etc/apache2/ssl;
+
+	
+7. virtualhost를 설정한다. 하나의 웹서버(apache)에서 여러개의 서비스를 도메인 별로 운영할 수 있도록 돕는 apache의 기능이다. 기본 설정 파일인 /etc/apache2/sites-available/default-ssl을 수정한다. 아래에서는 편집기로 nano를 사용하고 있다. nano에 대한 사용법은 nano 수업을 참고한다.
+
+	sudo vi /etc/apache2/sites-available/default-ssl
+	# 또는 아래 파일
+	sudo vi /etc/apache2/sites-available/default-ssl.conf
+	
+	
+	> SSLEngine on
+	> SSLCertificateFile /etc/apache2/ssl/apache.crt
+	> SSLCertificateKeyFile /etc/apache2/ssl/apache.key
+	
+	
+8. 파일의 내용에서 지시자의 값을 아래와 같이 변경한다.  예제 파일은 http://www.startssl.com/?app=21를 참고한다.
+
+	SSLCertificateFile    /etc/apache2/ssl/ssl.crt
+	SSLCertificateKeyFile /etc/apache2/ssl/ssl.key
+	SSLCertificateChainFile /etc/apache2/ssl/sub.class1.server.ca.pem
+	SSLCACertificateFile /etc/apache2/ssl/ca.pem
+
+9. 버추얼 호스트 default-ssl을 활성화된 서비스로 등록한다.
+
+	sudo a2ensite default-ssl
+
+10. apache를 재시작한다. 재시작 할 때 비밀번호를 물어보는 경우가 있다. 이것은 비공개키를 생성하는 단계에서 입력한 비밀번호를 입력하면 된다.
+
+	sudo service apache2 restart

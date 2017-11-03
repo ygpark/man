@@ -1,0 +1,20 @@
+create table whois (id integer primary key autoincrement, ip, country, isp, user);
+
+.separator ','
+create table whois1 (ip, country, isp, user);
+.import output1.csv whois1
+
+.separator ','
+create table whois2 (ip, country, isp, user);
+.import output2.csv whois2
+
+
+insert into whois (ip, country, isp, user) select ip, country, isp, user from whois1;
+insert into whois (ip, country, isp, user) select ip, country, isp, user from whois2;
+
+
+
+
+.separator ','
+create table tmp (cam_ip, date, external_ip, log, device_name);
+.import 110.11.232.102.csv tmp

@@ -1,0 +1,5 @@
+step. mft ÃßÃâ
+fls.exe \\.\c:
+icat.exe \\.\c: 0-128-1 > mft
+
+analyzeMFT.py -f mft -l -o mft.csv

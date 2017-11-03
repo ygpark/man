@@ -1,0 +1,15 @@
+﻿# csv파일로 내보내기
+
+## 사용법
+
+	sqlite3.exe myDatabase.db
+	.separator ','
+	.output  export.csv
+	SELECT * FROM mytable3;
+	.exit
+	
+	
+	
+## 후속 작업
+
+인코딩을 UTF-8로 바꿔준다.

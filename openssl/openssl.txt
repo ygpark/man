@@ -1,0 +1,15 @@
+
+# 비밀키 생성
+openssl genrsa -out private.pem 1024;
+
+# 비밀키로 공개키 생성
+openssl rsa -in private.pem -out public.pem -outform PEM -pubout;
+
+# 평문 파일 만들기
+echo 'coding everybody' > file.txt
+
+# 공개키로 파일 암호화하기
+openssl rsautl -encrypt -inkey public.pem -pubin -in file.txt -out file.ssl;
+
+# 비밀키로 암호 해제하기
+openssl rsautl -decrypt -inkey private.pem -in file.ssl -out decrypted.txt

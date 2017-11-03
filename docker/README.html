@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Title$ sudo docker search ubuntu NAME                          DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED ubuntu                        Official Ubuntu base image                      383 stackbrew/ubuntu              Official Ubuntu base image                      40 crashsystems/gitlab-docker    A trusted, regularly updated build of GitL...   19                   [OK] dockerfile/ubuntu             Trusted Ubuntu (http://www.ubuntu.com/) Bu...   15                   [OK] ubuntu-upstart                Upstart is an event-based replacement for ...   7 cmfatih/phantomjs             PhantomJS [ phantomjs 1.9.7, casperjs 1.1....   5                    [OK] dockerfile/ubuntu-desktop     Trusted Ubuntu Desktop (LXDE) (http://lxde...   5                    [OK] lukasz/docker-scala           Dockerfile for installing Scala 2.10.3, Ja...   5                    [OK] litaio/ruby                   Ubuntu 14.04 with Ruby 2.1.2 compiled from...   5                    [OK]</title>
+<link rel="stylesheet" href="https://stackedit.io/res-min/themes/base.css" />
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body><div class="container"><h1 id="docker-치트시트">Docker 치트시트</h1>
+
+<p>이미지 검색</p>
+
+<pre><code>sudo docker search ubuntu
+</code></pre>
+
+<p>이미지 받기</p>
+
+<pre><code>docker pull ubuntu:latest
+</code></pre>
+
+<p>이미지 목록 출력하기</p>
+
+<pre><code>docker images
+</code></pre>
+
+<p>컨테이너 생성하기</p>
+
+<pre><code>docker run -i -t --name hello ubuntu /bin/bash
+</code></pre>
+
+<p>컨테이너 목록 확인하기</p>
+
+<pre><code>docker ps -a
+</code></pre>
+
+<p>컨테이너 시작하기</p>
+
+<pre><code>docker start hello
+</code></pre>
+
+<p>컨테이너 재시작하기</p>
+
+<pre><code>docker restart hello
+</code></pre>
+
+<p>컨테이너에 접속하기</p>
+
+<pre><code>docker attach hello
+</code></pre>
+
+<p>컨테이너 정지하기</p>
+
+<pre><code>docker stop hello
+</code></pre>
+
+<p>컨테이너 삭제하기</p>
+
+<pre><code>docker rm hello
+</code></pre>
+
+<p>이미지 삭제하기</p>
+
+<pre><code>docker rmi ubuntu:latest
+</code></pre>
+
+<p>모든 컨테이너 삭제하기</p>
+
+<pre><code>docker rm `docker ps -aq`
+</code></pre></div></body>
+</html>

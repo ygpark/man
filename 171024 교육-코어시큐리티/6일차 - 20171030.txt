@@ -1,0 +1,403 @@
+----------------------------------------------------------------------------------------------
+교육과정 : 17년 사이버수사 전문화 고급과정
+과 목 명 : 쿠쿠 샌드박스를 이용한 악성코드 동적 분석, 볼륨 분석
+강 사 명 : 주한익 (코어시큐리티/보안기술교육팀/수석연구원, joohanik@coresec.co.kr)
+공유자료 : 웹브라우저 > http://192.168.11.174
+----------------------------------------------------------------------------------------------
+
+Hands-On) 쿠쿠 샌드박스 분석환경 구성
+Step1. Vmware Workstation 프로그램을 구동한 후 Cuckoo Sandbox 가상머신에 랩4GB 이상을 할당해 주세요.
+Step2. 부팅 후 다음 계정을 이용하여 로그인 합니다.
+	계정명 : user
+	패스워드 : lab
+Step3. 터미널 창을 띄웁니다. 화면 왼쪽의 "dash home" 아이콘 클릭 후 "terminal" 검색 후 실행
+Step4. 쿠쿠 샌드박스가 설치된 디렉토리로 이동합니다.
+user@user-virtual-machine:/opt/cuckoo/web$ cd ~
+user@user-virtual-machine:~$ cd /opt/cuckoo/
+user@user-virtual-machine:/opt/cuckoo$ ls
+2017-06-02-16-16-51.034-VBoxHeadless-8274.log  db           README.md
+agent                                          distributed  requirements.txt
+analyzer                                       docs         storage
+conf                                           lib          tests
+cuckoo.py                                      log          utils
+data                                           modules      web
+user@user-virtual-machine:/opt/cuckoo$
+
+Step5. VirtualBox 관리자를 구동합니다.
+user@user-virtual-machine:/opt/cuckoo$ virtualbox &
+[2] 4403
+
+Step6. 
+user@user-virtual-machine:/opt/cuckoo$ df
+Filesystem     1K-blocks     Used Available Use% Mounted on
+/dev/sda1       19478204 10436224   8045884  57% /
+udev             2056976        4   2056972   1% /dev
+tmpfs             413076      800    412276   1% /run
+none                5120        0      5120   0% /run/lock
+none             2065372      204   2065168   1% /run/shm
+/dev/sdb1      528315064  9919164 491552408   2% /media/sdb1
+user@user-virtual-machine:/opt/cuckoo$ 
+user@user-virtual-machine:/opt/cuckoo$ cd /media/sdb1/
+user@user-virtual-machine:/media/sdb1$ ls
+lost+found  Malware  VirtualBox VMs		<- 가상머신 이미지와 악성코드가 담겨있는 볼륨
+user@user-virtual-machine:/media/sdb1$ 
+
+
+
+
+Hands-On) 쿠쿠 샌드박스 구동
+step1. 쿠쿠 샌드박스 엔진을 구동합니다.
+user@user-virtual-machine:/opt/cuckoo$ pwd
+/opt/cuckoo
+user@user-virtual-machine:/opt/cuckoo$ ./cuckoo.py 
+
+                               ),-.     /
+  Cuckoo Sandbox              <(a  `---',' 
+     no chance for malwares!  ( `-, ._> )
+                               ) _>.___/
+                                   _/
+
+ Cuckoo Sandbox 2.0-dev
+ www.cuckoosandbox.org
+ Copyright (c) 2010-2015
+
+ Checking for updates...
+ You are running a development version! Current stable is 2.0.4.
+2017-10-30 11:51:05,080 [lib.cuckoo.core.scheduler] INFO: Using "virtualbox" as machine manager
+2017-10-30 11:51:06,337 [lib.cuckoo.core.scheduler] INFO: Loaded 2 machine/s
+2017-10-30 11:51:06,342 [lib.cuckoo.core.scheduler] WARNING: As you've configured Cuckoo to execute parallel analyses, we recommend you to switch to a MySQL ora PostgreSQL database as SQLite might cause some issues.
+2017-10-30 11:51:06,348 [lib.cuckoo.core.scheduler] INFO: Waiting for analysis tasks.
+
+Step2. GUI 모듈을 구동합니다.
+user@user-virtual-machine:/opt/cuckoo/web$ pwd
+/opt/cuckoo/web
+user@user-virtual-machine:/opt/cuckoo/web$ 
+user@user-virtual-machine:/opt/cuckoo/web$ ./manage.py runserver
+Performing system checks...
+
+System check identified no issues (0 silenced).
+October 30, 2017 - 11:53:10
+Django version 1.8.4, using settings 'web.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+
+Step3. firefox 브라우저를 이용하여 GUI 접속
+	http://localhost:8000
+
+
+
+
+
+Hands-On) 악성코드 동적 분석
+user@user-virtual-machine:/opt/cuckoo$ cd storage/
+user@user-virtual-machine:/opt/cuckoo/storage$ ls
+analyses  baseline  binaries
+user@user-virtual-machine:/opt/cuckoo/storage$ cd analyses/
+user@user-virtual-machine:/opt/cuckoo/storage/analyses$ ls
+1  latest
+user@user-virtual-machine:/opt/cuckoo/storage/analyses$ 
+
+
+
+["shadowbot.exe" 분석결과]
+Q> 해당 악성코드는 어떠한 파일을 생성합니까?
+A> Photo Album.zip, rdshost.dll
+user@user-virtual-machine:/opt/cuckoo/storage/analyses/1/files$ ls
+afa86dfbaec7ed5c_rdshost.dll  c5351182189d8549_photo album.zip
+
+user@user-virtual-machine:/opt/cuckoo/storage/analyses/1$ cat files.json | grep rdshost.dll
+{"path": "files/afa86dfbaec7ed5c_rdshost.dll", "pids": [136], "filepath": "C:\\WINDOWS\\system32\\rdshost.dll"}
+user@user-virtual-machine:/opt/cuckoo/storage/analyses/1$ 
+
+user@user-virtual-machine:/opt/cuckoo/storage/analyses/1$ cat files.json | grep photo
+{"path": "files/c5351182189d8549_photo album.zip", "pids": [136], "filepath": "C:\\WINDOWS\\photo album.zip"}
+user@user-virtual-machine:/opt/cuckoo/storage/analyses/1$ 
+
+user@user-virtual-machine:/tmp$ cp /opt/cuckoo/storage/analyses/1/files/c5351182189d8549_photo\ album.zip .
+user@user-virtual-machine:/tmp$ unzip c5351182189d8549_photo\ album.zip 
+Archive:  c5351182189d8549_photo album.zip
+ extracting: photo album2007.pif     
+user@user-virtual-machine:/tmp$ 
+
+Q> 해당 악성코드는 어떠한 프로세스 혹은 쓰레드를 생성합니까?
+A> explorer.exe 프로세스의 쓰레드로 c:\windows\system32\rdshost.dll을 로딩한다.
+
+Q> 해당 악성코드는 자동실행을 위해 어떠한 자원을 조작합니까? (레지스트리? 테스크스케쥴러? WMI 저장소?)
+A> Software\Microsoft\Windows\CurrentVersion\ShellServiceObjectDelayLoad (레지스트리)
+   윈도우 부팅 후 실행되는 explorer.exe 프로세스가 로드하는 dll 목록
+
+Q> 해당 악성코드는 어떠한 네트워크 활동을 합니까?
+A> darkjester.xplosionirc.net 도메인과 통신을 한다. (C2 서버로 추정됨)
+user@user-virtual-machine:/opt/cuckoo/storage/analyses/1$ wireshark dump.pcap  
+
+
+
+이론) 악성코드의 기능과 API 셋
+[DLL Injection]
+OpenProcess
+LoadLibrary
+VirtualAllocEx
+WriteProcessMemory
+CreateRemoteThread  혹은 RtlCreateUserThread
+
+[Process Walking]
+CreateToolHelp32Snapshot
+Process32First
+Process32Next
+
+[Registry Manipulation]
+RegCreateKey
+RegSetValue
+
+[File Creation]
+NtCreateFile
+NtOpenFile
+NtWriteFile
+
+[Dynamic Binding]
+LoadLibrary
+GetProcAddress
+..
+
+
+
+Hands-On) API 셋을 이용한 악성코드 기능 분석
+Step1. 악성코드 원본이 있는 디렉토리로 이동
+user@user-virtual-machine:/media/sdb1/Malware$ cd WindowsXP_Malware/
+user@user-virtual-machine:/media/sdb1/Malware/WindowsXP_Malware$ ls
+malware-blakcenergy.exe_  shadowbot_unpack.exe_
+malware-Laqma.A.exe_      shadowbot_unpack.txt
+malware-shadowbot.exe_    upx_detection_binary_regex2.yara
+malware-tibickbot.exe_    upx_detection_binary.yara
+malware-zeus.exe_         upx_detection_textual.yara
+user@user-virtual-machine:/media/sdb1/Malware/WindowsXP_Malware$ pwd
+/media/sdb1/Malware/WindowsXP_Malware
+
+Step2. 악성코드 "shadowbot.exe"의 문자열 추출
+user@user-virtual-machine:/media/sdb1/Malware/WindowsXP_Malware$ strings -n 3 malware-shadowbot.exe_ > shadowbot.txt
+
+Step3. 추출된 문자열 확인
+user@user-virtual-machine:/media/sdb1/Malware/WindowsXP_Malware$ cat shadowbot.txt | more
+
+	... 문자열 정보만 확인했을 때는 유용한 정보를 얻을 수 없다 ...
+
+Step4. 쿠쿠 샌드박스가 분석한 API 목록 확인
+user@user-virtual-machine:/opt/cuckoo/storage/analyses/1$ pwd
+/opt/cuckoo/storage/analyses/1
+user@user-virtual-machine:/opt/cuckoo/storage/analyses/1$ ls
+analysis.log  dump.pcap         logs         reports  <- 해당 디렉토리에 있는 파일
+binary        dump_sorted.pcap  memory       shots
+buffer        files             network      task.json
+cuckoo.log    files.json        reboot.json  tlsmaster.txt
+user@user-virtual-machine:/opt/cuckoo/storage/analyses/1$ 
+
+Step5. report.json 파일에서 API 셋을 기반으로 기능들을 파악해 본다.
+user@user-virtual-machine:/opt/cuckoo/storage/analyses/1/reports$
+
+	... 실제 사용된 API 목록들이 등장한다. 하지만 너무 많다 ...
+
+
+교육생 실습) 스크립트 혹은 명령어 집합을 이용하여 악성코드 기능을 분석해 보세요. (위의 API 셋 참조)
+
+
+다음과 같은 YARA 룰셋 파일을 제작합니다.
+
+user@user-virtual-machine:/tmp$ vim malwrae_function.yara 
+------------ malware_function.yara -------------------------------------------------------------
+rule Process_Walking
+{
+        meta:
+                description = "This is [Process Walking] API set"
+        strings:
+                $a = "CreateToolhelp32Snapshot"
+                $b = "Process32First"
+                $c = "Process32Next"
+        condition:
+                $a and $b and $c
+}
+
+rule DLL_Injection
+{
+        meta:
+                description = "This is [DLl Injection] API set"
+	strings:
+		$a = "OpenProcess"
+		$b = "LoadLibrary"
+		$c = "VirtualAllocEx"
+		$d = "WriteProcessMemory"
+		$e = "CreateRemoteThread"
+		$f = "RtlCreateUserThread"
+	condition:
+		(($a and $b and $c and $d) or $e) or (($a and $b and $c and $d) or $f)
+}
+
+rule Registry_Manipulation
+{
+        meta:
+                description = "This is [Registry manipulation] API set"
+	strings:
+		$a = "RegCreateKey"
+		$b = "RegSetValue"
+	condition:
+		$a and $b
+}
+
+rule File_Creation_Manipulation
+{
+	meta:
+		description = "This is [File Creation Manipulation] API set"
+	strings:
+		$a = "NtCreateFile"
+		$b = "NtWriteFile"
+		$c = "NtOpenFile"
+	condition:
+		($a and $b) or ($c and $b)
+}
+
+rule Dynamic_Binding
+{
+	meta:
+		description = "This is [Dynamic Binding] API set"
+	strings:
+		$a = "LoadLibrary"
+		$b = "GetProcAddress"
+	condition:
+		$a and $b
+}
+----------------------------------------------------------------------------------------------
+user@user-virtual-machine:/tmp$ yara malwrae_function.yara report.json 
+Process_Walking report.json
+DLL_Injection report.json
+Registry_Manipulation report.json
+File_Creation_Manipulation report.json
+Dynamic_Binding report.json
+
+
+
+user@user-virtual-machine:/tmp/lab$ yara malware_function.yara malware-shadowbot.exe_ 
+Dynamic_Binding malware-shadowbot.exe_
+
+
+user@user-virtual-machine:/tmp/lab$ yara malware_function.yara shadowbot_unpack.exe_ 
+Process_Walking shadowbot_unpack.exe_
+DLL_Injection shadowbot_unpack.exe_
+Registry_Manipulation shadowbot_unpack.exe_
+Dynamic_Binding shadowbot_unpack.exe_
+user@user-virtual-machine:/tmp/lab$ 
+
+		
+
+교육생 실습) 쿠쿠 샌드박스와 YARA룰을 활용하여 악성코드(WindowsXP용)의 기능을 판별하세요
+Q> 동적 바인딩을 수행하는 악성코드는 무엇입니까?
+malware-shadowbot.exe_
+
+Q> DLL 삽입 기능을 가진 악성코드는 무엇입니까?
+
+Q> 파일을 생성하는 기능을 가진 악성코드는 무엇입니까?
+
+Q> UPX 패커로 패킹된 악성코드는 무엇입니까?
+HINT. UPX 패커로 패킹된 실행파일의 경우 "upx0", "upx1" 문자열이 포함된다
+
+다음과 같이 악성코드가 존재하는 디렉토리를 통째로 분석합니다.
+------------------------------------------------------------------------------------
+user@user-virtual-machine:/tmp/lab$ yara malware_function.yara /media/sdb1/Malware/WindowsXP_Malware/
+Dynamic_Binding /media/sdb1/Malware/WindowsXP_Malware//malware-zeus.exe_
+Registry_Manipulation /media/sdb1/Malware/WindowsXP_Malware//malware-tibickbot.exe_
+Process_Walking /media/sdb1/Malware/WindowsXP_Malware//shadowbot_unpack.exe_
+DLL_Injection /media/sdb1/Malware/WindowsXP_Malware//shadowbot_unpack.exe_
+Registry_Manipulation /media/sdb1/Malware/WindowsXP_Malware//shadowbot_unpack.exe_
+Dynamic_Binding /media/sdb1/Malware/WindowsXP_Malware//shadowbot_unpack.exe_
+Dynamic_Binding /media/sdb1/Malware/WindowsXP_Malware//malware-Laqma.A.exe_
+Dynamic_Binding /media/sdb1/Malware/WindowsXP_Malware//malware-shadowbot.exe_
+DLL_Injection /media/sdb1/Malware/WindowsXP_Malware//malware-blakcenergy.exe_
+Registry_Manipulation /media/sdb1/Malware/WindowsXP_Malware//malware-blakcenergy.exe_
+Dynamic_Binding /media/sdb1/Malware/WindowsXP_Malware//malware-blakcenergy.exe_
+------------------------------------------------------------------------------------
+
+
+
+교육생 실습) "malware-tibickbot.exe_"를 동적분석하여 다음 정보를 확인하세요.
+
+Q> 악성코드가 가지고 있는 기능을 나열하세요
+	레지스트리 조작, 프로세스 생성 ...
+Q> 네트워크 통신을 시도하는 도메인
+	tbc3.hanged.tk
+Q> 생성된 파일
+	C:\WINDOWS\system32\svcnet.exe
+Q> 조작하는 레지스트리
+	HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run
+	에 "Shellapi32"키 추가 후 svcnet.exe 등록
+	HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run
+	에 "Shellapi32"키 추가 후 svcnet.exe 등록
+Q> 생성하는 프로세스 (CreateProcess, ShellExecuteEx API 확인)
+	svcnet.exe
+
+
+
+
+Hands-On) 손상된 NTFS VBR 복원 (Winhex 도구 사용)
+FTK Imager, Winhex, 3.20_Damaged_Image.zip(압축 풀어주세요)를 다운로드 해주세요
+
+NTFS는 ASCII hex 매핑값이 "4E 54 46 53" 입니다.
+
+NTFS로 포맷된 볼륨의 VBR은 다음과 같은 시그너처 패턴을 가진다.
+------------------------------------------------------------
+EB XX YY 4E 54 46 53 .....
+
+-----------------------------------------------------------
+
+Winhex 도구 > Search > Find Hex Value > 시그너처는 "EB 3F 3F 4E 54 46 53" > 
+"Use as Wildcard Mask" 클릭 >
+
+
+8369864 섹터에서 NTFS VBR 시그너처 발견
+  0		  63						 8369864
+|MBR|-----------|손상|-----------------------------------------|VBR 백업|
+
+                     |<-------------- 8369801 -------------------------->|
+
+
+
+8369864섹터 전체를 마우스 드레그 하여 하이라이팅 > 우클릭 > Edit > Copy Block > Normally
+> CTRL + G 단축키,  63 섹터로 이동 > 우클릭 > Edit > Clipboard Data > Write
+
+
+
+
+
+Hands-On) 손상된 MBR 복원 (testdisk 도구 사용)
+
+D:\testdisk-7.1-WIP>testdisk_win.exe Scenario_3.20-flat.vmdk
+
+Proceed > Options > Alignment partition > No > Ok > Analyse > 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+** 쿠쿠 샌드박스 스토리지 및 세션 정보를 클리어 하는 방법 **
+user@user-virtual-machine:/opt/cuckoo$./cuckoo.py --clean
+
+
+
+
+
+
+
+
+
+
+
+

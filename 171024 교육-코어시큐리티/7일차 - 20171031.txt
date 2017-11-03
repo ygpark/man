@@ -1,0 +1,184 @@
+----------------------------------------------------------------------------------------------
+교육과정 : 17년 사이버수사 전문화 고급과정
+과 목 명 : 악성코드 탐지 및 추적
+강 사 명 : 권오정 (코어시큐리티/보안기술교육팀/연구원, kwonoj@coresec.co.kr)
+공유자료 : 웹브라우저 > http://192.168.11.174
+----------------------------------------------------------------------------------------------
+[[SSDT Hooking 실습]]
+
+step. dumpit 을 실행하여 메모리를 덤프합니다.
+
+step. C:\usb>vola.exe -f dump.raw imageinfo
+
+C:\usb>vola.exe -f dump.raw imageinfo
+Volatility Foundation Volatility Framework 2.3.1
+Determining profile based on KDBG search...
+
+          Suggested Profile(s) : Win7SP0x86, Win7SP1x86
+                     AS Layer1 : IA32PagedMemory (Kernel AS)
+                     AS Layer2 : FileAddressSpace (C:\usb\dump.ra
+                      PAE type : No PAE
+                           DTB : 0x185000L
+                          KDBG : 0x82d26c28L
+          Number of Processors : 1
+     Image Type (Service Pack) : 1
+                KPCR for CPU 0 : 0x82d27c00L
+             KUSER_SHARED_DATA : 0xffdf0000L
+           Image date and time : 2017-10-31 02:13:14 UTC+0000
+     Image local date and time : 2017-10-31 11:13:14 +0900
+
+C:\usb>
+
+step.	C:\usb>vola.exe -f dump.raw --profile=Win7SP1x86 pslist > pslist.txt
+	C:\usb>tasklist > tasklist.txt
+
+****** 환경변수 등록 **************************************************************
+	path 검색
+	path 변수를 더블 클릭하시고, 기존에 등록되어있는 값 뒤에 ';'를 붙여주시고
+	C:\usb\tools\sleuthkit-win32-3.2.3\bin 를 붙여넣어주십니다.
+
+step. 기존에 실행되고있는 커맨드 창은 닫아주고 새로 실행합니다.
+
+step. 물리디스크에 직접적으로 접근하여 파일 목록을 확인합니다.
+C:\usb>fls \\.\c:
+	// windows node 번호 확인
+
+C:\usb>fls \\.\c: 543-144-7
+.....
+r/r 45-128-1:   dotctl32.exe
+r/r 56237-128-1:        dotctl32.sys
+	// dotctl32.exe 파일 존재 확인
+
+step. 파일을 추출합니다.
+C:\usb>icat \\.\c: 45-128-1 > do_32._xe
+C:\usb>icat \\.\c: 56237-128-1 > do_32._ys
+
+step. 파일의 정보들이 올바른지 확인 합니다. (패킹, 암호화 여부 확인)
+C:\usb>C:\usb\tools\pescanner\pescanner.py do_32._xe
+python-magic is not installed, file types will not be available
+pyssdeep is not installed, see http://code.google.com/p/pyssdeep/
+yara-python is not installed, see http://code.google.com/p/yara-project/
+############################################################
+Record 0
+############################################################
+
+Meta-data
+============================================================
+File:    do_32._xe
+Size:    7680 bytes
+MD5:     152b97cf27ec11fd2e49bc3d4cfdd750
+SHA1:    542b36260988991c639e9c29d2b42858e08fbc31
+Date:    0x53FE7583 [Thu Aug 28 00:19:15 2014 UTC]
+EP:      0x40144a (.text)
+
+Resource entries
+============================================================
+Name               RVA          Size         Type
+------------------------------------------------------------
+RT_MANIFEST        0x4058       0x256
+
+Suspicious IAT alerts
+============================================================
+StartServiceA
+CreateServiceA
+
+Sections
+============================================================
+Name       VirtAddr     VirtSize     RawSize      Entropy
+------------------------------------------------------------
+.text      0x1000       0x994        0xa00        5.898308
+.rdata     0x2000       0x748        0x800        4.790116
+.data      0x3000       0x384        0x200        0.352759    [SUSPICIOUS]
+.rsrc      0x4000       0x2b0        0x400        5.194460
+.reloc     0x5000       0x1c4        0x200        5.027559
+
+
+C:\usb>icat \\.\c: 56237-128-1 > do_32._ys
+
+step. 공식 적으로 인증된 도구를 사용해서 확인합니다.
+C:\usb>C:\usb\tools\SysinternalsSuite\sigcheck.exe do_32._xe
+
+Sigcheck v2.1 - File version and signature viewer
+Copyright (C) 2004-2014 Mark Russinovich
+Sysinternals - www.sysinternals.com
+
+C:\usb\do_32._xe:
+        Verified:       Unsigned
+        Link date:      ?? 9:19 2014-08-28
+        Publisher:      n/a
+        Description:    n/a
+        Product:        n/a
+        Prod version:   n/a
+        File version:   n/a
+        MachineType:    32-bit
+
+C:\usb>
+
+step. 문자열 검사를 합니다.
+C:\usb>C:\usb\tools\SysinternalsSuite\strings.exe do_32._ys > do_32sys.txt
+
+/////////////////////////////////////////////////////////////////////////
+dotctl32.sys 파일도 동일하게 확인합니다.
+C:\usb>C:\usb\tools\SysinternalsSuite\sigcheck.exe do_32._ys
+C:\usb>C:\usb\tools\SysinternalsSuite\strings.exe do_32._ys > do_32sys.txt
+//////////////////////////////////////////////////////////////////////////
+
+step. ssdt 후킹 확인
+C:\usb>vola -f dump.raw --profile=Win7SP1x86 ssdt | findstr /i /v win32k.sys | findstr /i /v ntoskrnl.exe
+Volatility Foundation Volatility Framework 2.3.1
+[x86] Gathering all referenced SSDTs from KTHREADs...
+Finding appropriate address space for tables...
+SSDT[0] at 82c6173c with 401 entries
+  Entry 0x0077: 0x8a7cf736 (NtEnumerateValueKey) owned by dotctl32.sys
+  Entry 0x00df: 0x8a7cf4f4 (NtQueryDirectoryFile) owned by dotctl32.sys
+  Entry 0x0105: 0x8a7cf616 (NtQuerySystemInformation) owned by dotctl32.sys
+SSDT[1] at 90aa6000 with 825 entries
+
+step. 안전 모드로 부팅하기
+실행창에서 msconfig.exe 를 실행합니다.
+부팅 탭에서 부팅옵션을 안전부팅(최소설치)로 적용하고 다시 실행합니다.
+
+step. 악성프로그램 삭제
+C:\Windows 경로에 있는 악성 프로그램을 삭제합니다.
+regedit.exe 를 실행시켜 HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run 에 등록 되어있는 키값도 삭제합니다.
+
+step. 다시 부팅 모드를 안전 모드 부팅을 해제 후 다시 실행합니다.
+
+[[Code Injection 실습]]
+
+step. 올바르지 않은 부모/자식 관계의 프로세스, 올바르지 않은 정보를 가지고 있는 프로세스가 있는지 확인한다.
+C:\usb\tools\SysinternalsSuite\procesp.exe
+c:\Windows\System32\spoolsv.exe
+부모/자식관계가 올바르지않다. 하지만, description 정보 등이 올바르게 있는것을 확인
+
+step. 자동실행지점에 의심스러운 프로세스가 있는지 확인한다.
+C:\usb\tools\SysinternalsSuite\autoruns.exe
+	Zcodec Update
+	c:\windows\system32\zcodec.exe
+	2014-08-28 오전 8:25
+
+step. 메모리를 덤프한다.
+
+C:\usb>C:\usb\tools\SysinternalsSuite\strings.exe zcodec.exe > zcodec.txt
+
+[희생 spoolsv PID] 를 먼저 확인합니다.
+C:\usb>vola.exe -f dump.raw --profile=Win7SP1x86 -p [희생 spoolsv PID] vadinfo > vadinfo.txt
+
+c:\usb\ 경로에 폴더를 새로 생성합니다.
+C:\usb>vola.exe -f dump.raw --profile=Win7SP1x86 -p [희생 spoolsv PID] vaddump -D spoolsv
+
+C:\usb>C:\usb\tools\SysinternalsSuite\strings.exe spoolsv.exe.3e182740.0x00e70000-0x00e75fff.dmp > spoolsvdump.txt
+
+[[시나리오1]]
+
+step. mft 추출
+C:\usb>C:\usb\tools\sleuthkit-win32-3.2.3\bin\fls.exe \\.\c:
+C:\usb>C:\usb\tools\sleuthkit-win32-3.2.3\bin\icat.exe \\.\c: 0-128-1 > mft
+
+step. mft 파일 파싱
+C:\usb>C:\usb\tools\analyzeMFT-2.0.10\analyzeMFT.py -f mft -l -o mft.csv
+
+step. 호스트 컴퓨터에 Apache_OpenOffice_4.1.3_Win_x86_install_ko.exe 설치
+// 강사 피시에서 다운받습니다. [192.168.11.174]
+
+step. 

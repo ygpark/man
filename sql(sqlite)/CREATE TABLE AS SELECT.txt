@@ -1,0 +1,17 @@
+﻿
+## 새 테이블에 결과값 저장
+
+
+
+CREATE TABLE <테이블명> AS <SELECT쿼리>;
+
+
+## 기존 테이블에 결과값 저장
+
+INSERT INTO TARGET_TABLE(aaa, bbb, ...)
+SELECT aaa, bbb, ...
+FROM SOURCE_TABLE
+WHERE aaa = ????
+
+
+
