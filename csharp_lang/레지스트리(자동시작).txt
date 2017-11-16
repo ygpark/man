@@ -1,0 +1,40 @@
+using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace autostart
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            try
+            {
+                RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+                string filePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                object valueObject = null;
+                string applicationName = "MyApp";
+
+                //레지스트리 등록
+                valueObject = registryKey.GetValue(applicationName);
+                if (valueObject == null)
+                {
+                    registryKey.SetValue(applicationName, filePath);
+                }
+
+                //레지스트리 삭제
+                valueObject = registryKey.GetValue(applicationName);
+                if (valueObject != null)
+                {
+                    registryKey.DeleteValue(applicationName, false);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            
+        }
+    }
+}

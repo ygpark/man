@@ -1,0 +1,47 @@
+using System;
+using System.Text.RegularExpressions;
+
+public class Example
+{
+   public static void Main()
+   {
+      string pattern = "a*";
+      string input = "abaabb";
+
+      foreach (Match m in Regex.Matches(input, pattern)) 
+         Console.WriteLine("'{0}' found at index {1}.", 
+                           m.Value, m.Index);
+   }
+}
+// The example displays the following output:
+//       'a' found at index 0.
+//       '' found at index 1.
+//       'aa' found at index 2.
+//       '' found at index 4.
+//       '' found at index 5.
+//       '' found at index 6.
+
+
+
+//------------------------------------------------------------------------------------
+
+
+static string UrlEncode(string url)
+{
+	Dictionary<string, string> toBeEncoded = new Dictionary<string, string>()
+	{
+			{ "%", "%25" }, { "!", "%21" }, { "#", "%23" }, { " ", "%20" },
+			{ "$", "%24" }, { "&", "%26" }, { "'", "%27" }, { "(", "%28" },
+			{ ")", "%29" }, { "*", "%2A" }, { "+", "%2B" }, { ",", "%2C" },
+			{ "/", "%2F" }, { ":", "%3A" }, { ";", "%3B" }, { "=", "%3D" },
+			{ "?", "%3F" }, { "@", "%40" }, { "[", "%5B" }, { "]", "%5D" }
+	};
+
+	Regex replaceRegex = new Regex(@"[%!# $&'()*+,/:;=?@\[\]]");
+
+	MatchEvaluator matchEval = match => toBeEncoded[match.Value];
+
+	string encoded = replaceRegex.Replace(url, matchEval);
+
+	return encoded;
+}

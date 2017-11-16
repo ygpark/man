@@ -1,0 +1,1 @@
+string.substring(시작위치, 종료위치)

@@ -1,0 +1,10 @@
+
+
+# 실행파일 관련
+	static string _FULLPATH = System.Reflection.Assembly.GetExecutingAssembly().Location;
+	static string _FILENAME = Path.GetFileName(_FULLPATH);
+	static string _NAME = _FILENAME.Split('.')[0];
+	
+# TEMP 경로
+	static string _TEMP = System.IO.Path.GetTempPath();
+	

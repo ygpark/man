@@ -1,0 +1,33 @@
+﻿# csv파일로 내보내기
+
+## 사용법1
+
+	sqlite3.exe myDatabase.db
+	.separator ','
+	.output  export.csv
+	SELECT * FROM mytable3;
+	.exit
+
+
+## 사용법2
+	
+	sqlite3.exe c:/sqlite/chinook.db
+	sqlite> .headers on
+	sqlite> .mode csv
+	sqlite> .output data.csv
+	sqlite> SELECT customerid,
+	   ...>        firstname,
+	   ...>        lastname,
+	   ...>        company
+	   ...>   FROM customers;
+	sqlite> .quit
+
+
+## 한줄로
+
+	sqlite3 -header -csv World.db3 "select * from city;" > city.csv
+
+	
+## 후속 작업
+
+인코딩을 UTF-8로 바꿔준다.

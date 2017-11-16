@@ -1,0 +1,72 @@
+Atom editor
+===========
+
+
+유용한 패키지
+------------
+
+
+### 1. emmet (https://atom.io/packages/emmet)
+
+
+HTML , CSS 자동 완성기능과 여러 개의 구조를 가진 태그를 한방에 완성시킬 수 있는
+기능을 제공한다.
+
+### 2. Remote-FTP (https://atom.io/packages/remote-ftp)
+
+아톰에서 FTP를 연결하는 패키지. 단축키는 Alt + Ctrl + O 키를 누르면 작동한다.
+입력양식은 링크를 따라가자.
+
+### 3. atom-beautify (https://atom.io/packages/atom-beautify)
+
+소스코드들 중에 한칸 더 들어와 있는 등, 정렬되지 않은 코드를 정렬해준다.
+사용은 우클릭 - Debug Atom Beautify 를 클릭해주면 실행된다.
+
+
+### 4. tool-bar (https://atom.io/packages/tool-bar)
+
+툴바의 아이콘 중 커피스크립트 등의 파일들을 구분이 쉽도록 파일의 특징을 나타낸
+아이콘으로 보여준다.
+
+### 5. Atom-autocomplete-php (https://atom.io/packages/atom-autocomplete-php)
+
+PHP 코드 자동완성 기능을 추가해준다. 설치하면 PHP 쓰기가 한결 편해짐.
+
+
+### 6. highlight-line (https://atom.io/packages/highlight-line)
+
+현재 자신이 선택한 코드의 행을 밝게 보이게 해준다. 설치해두면 나름 편하다.
+
+
+### 7. minimap (https://atom.io/packages/minimap)
+
+오른쪽 상단에 소스코드 전체의 맵이 보인다. 설정에서 absolute-mode를 활성화 시켜두기를
+권장한다.
+
+### 7. minimap-highlight-selected (https://atom.io/packages/minimap)
+
+### 7. minimap-git-diff (https://atom.io/packages/minimap)
+
+
+단축키 설정
+----------
+
+emmit 패키지 단축키와 markdown 패키지 단축키가 충돌한다.
+이런 경우 키맵을 바꿀 수 있다.
+
+`ctrl-,`에서 `keybinding`를 클릭하면 목록 좌측에 `클립보드로 복사`메뉴가 있다.
+이걸로 복사해서 상단에 `your keymap` 링크를 눌러 복사한다.
+
+```
+'atom-text-editor:not([mini])':
+  'ctrl-alt-shift-M': 'emmet:merge-lines'
+
+'atom-workspace, atom-workspace atom-text-editor':
+  'ctrl-shift-M': 'markdown-preview:toggle'
+```
+
+
+테마, 그외
+---------
+
+- One dark (추천)

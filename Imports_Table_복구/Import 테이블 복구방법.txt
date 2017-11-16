@@ -1,0 +1,8 @@
+1. OllyDbg 프로그램에서
+	Attach
+	Dump
+
+2. Import REConstructor 프로그램에서
+	Attach
+	AutoSearch
+	Dump It -> 1에서 Dump한 파일 선택

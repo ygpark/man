@@ -1,0 +1,5 @@
+ghostyak@naver.com
+
+ID			=LEFT(B2,FIND("@", B2)-1)
+DOMAIN		=SUBSTITUTE(B2, LEFT(B2,FIND("@", B2)), "")
+
