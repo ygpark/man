@@ -1,0 +1,6 @@
+import zipfile
+       
+jungle_zip = zipfile.ZipFile('C:\\Stories\\Fantasy\\jungle.zip', 'w')
+jungle_zip.write('C:\\Stories\\Fantasy\\jungle.pdf', compress_type=zipfile.ZIP_DEFLATED)
+ 
+jungle_zip.close()
