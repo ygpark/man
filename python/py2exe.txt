@@ -1,0 +1,47 @@
+Python exe파일 만들기
+=====================
+
+
+py2exe 다운로드
+----------------
+
+[py2exe 홈페이지](http://www.py2exe.org)에서 py2exe를 다운받는다
+
+
+
+
+setup.py2exe
+-------------
+
+```
+	from distutils.core import setup
+	import py2exe, sys, os
+
+	includes  = [
+	 "encodings",
+	 "encodings.utf_8",
+	]
+	 
+	options = {
+	 "bundle_files": 1,                 # create singlefile exe
+	 "compressed": 1,                 # compress the library archive
+	 "optimize": 2,                 # do optimize
+	 "includes": includes,
+	}
+	 
+	setup(
+	 options = {"py2exe" : options},
+	 console = [{'script': "test.py"}],
+	 zipfile = None,
+	)
+	
+```
+
+
+
+setup.py 실행
+-------------
+
+```
+python setup.py py2exe
+```

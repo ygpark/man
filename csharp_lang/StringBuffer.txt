@@ -1,0 +1,12 @@
+using System.IO;
+
+using (StringReader reader = new StringReader(_input))
+{
+	int count = 0;
+	string line;
+	while ((line = reader.ReadLine()) != null)
+	{
+	count++;
+	Console.WriteLine("Line {0}: {1}", count, line);
+	}
+}

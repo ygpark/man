@@ -1,0 +1,4 @@
+apt-get install -y nabi
+apt-get install -y fonts-nanum fonts-nanum-coding fonts-unfonts-core
+apt-get install -y im-config
+im-config # 한글로 설정

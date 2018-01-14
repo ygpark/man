@@ -1,0 +1,6 @@
+import zipfile
+         
+fantasy_zip = zipfile.ZipFile('C:\\Stories\\Fantasy\\archive.zip')
+fantasy_zip.extract('Fantasy Jungle.pdf', 'C:\\Stories\\Fantasy')
+ 
+fantasy_zip.close()

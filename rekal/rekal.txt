@@ -1,0 +1,18 @@
+도움말 : 인터엑티브 모드에 가서 서브명령어 치고 탭!
+
+
+rekal.exe -f black.raw pslist --proc_regex "svchost.exe"	# 프로세스 목록 확인
+rekal.exe -f black.raw dlllist 572				# 커맨드라인, DLL목록 확인
+rekal.exe -f black.raw procdump 572				# 실행파일 덤프뜨기. 단, import directory 복원해야 실행가능
+rekal.exe -f black.raw malfind					# 의심스러운 파일 찾기
+
+rekal.exe -f black.raw vadinfo --eprocess 0x82132a78 > vadinfo_svchost.txt
+
+rekal.exe -f black.raw vaddump --eprocess 0x82132a78 > vadinfo_svchost.txt
+
+
+rekal.exe -f pickmeup.raw pslist --proc_regex "pickmeup"
+
+rekal.exe -f pickmeup.raw procdump [PID] [-D 저장경로]
+
+rekal.exe -f pickmeup.raw pslist --proc_regex "pickmeup"

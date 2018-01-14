@@ -1,0 +1,5 @@
+string.split(분리할 문자)
+
+
+string str = "aaa/bbb";
+string[] rst = str.split("/");
