@@ -1,0 +1,134 @@
+
+
+
+# 로그인 비밀번호
+
+	id: user
+	password: raspberry
+	
+	
+`sudo raspi-config`명령어로 비밀번호 변경
+	
+	
+
+# ssh설정
+
+	# sudo raspi-config
+
+
+
+
+# 고정아이피 설정
+
+	sudo vim /etc/network/interfaces
+
+	auto eth0
+	allow-hotplug eth0
+	iface eth0 inet static
+	address 192.168.0.103
+	netmask 255.255.255.0
+	gateway 192.168.0.1
+	
+	
+# 웹서버 - NGINX
+
+## 설치
+
+	sudo apt-get install nginx
+	sudo /etc/init.d/nginx start
+
+## 기본 웹 페이지 변경하기
+
+라즈비안에서 엔진엑스의 기본 웹 페이지는 /var/www/html에 있습니다. 이 폴더로 이동하여 index.nginx-debian.html을 편집하거나 원하는 다른 것으로 바꾸세요. /etc/nginx/sites-available의 'root'로 시작하는 행에서 디폴트 페이지 위치를 정할 수 있습니다.
+
+## PHP설치
+
+	sudo apt-get install php-fpm
+	
+## 엔진엑스에서 PHP 활성화하기
+
+```
+cd /etc/nginx
+sudo nano sites-enabled/default 	
+```
+
+다음의 행을 찾습니다.
+
+```
+index index.html index.htm;
+```
+
+대략 25행 부근에 있습니다(nano에서 현재 행 번호를 보려면 `CTRL + C`를 누릅니다).
+
+다음과 같이, `index` 뒤에 `index.php`를 추가합니다.
+
+```
+index index.php index.html index.htm;
+```
+
+
+다음의 내용을 가진 섹션을 찾을 때까지 아래로 스크롤합니다.
+
+```
+# pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+#
+# location ~ \.php$ {
+```
+
+다음의 행들에서 `#` 문자를 지웁니다.
+
+```
+location ~ \.php$ {
+    include snippets/fastcgi-php.conf;
+    fastcgi_pass unix:/var/run/php5-fpm.sock;
+}
+```
+
+그러면 다음과 같이 보일 것입니다.
+
+```
+# pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+#
+location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+
+		# With php5-cgi alone:
+#       fastcgi_pass 127.0.0.1:9000;
+		# With php5-fpm:
+		fastcgi_pass unix:/var/run/php5-fpm.sock;
+}
+```
+
+
+
+설정 파일을 재적재합니다.
+
+```
+sudo /etc/init.d/nginx reload
+```
+
+##PHP 테스트하기
+
+이름을 `index.nginx-debian.html`에서 `index.php`로 바꿉니다.
+
+```
+cd /var/www/html/
+sudo mv index.nginx-debian.html index.php
+```
+
+텍스트 편집기에서 `index.php`를 엽니다.
+
+```
+sudo nano index.php
+```
+
+현재의 컨텐츠를 대체할 약간의 동적 PHP 구문을 추가합니다.
+
+```
+<?php echo phpinfo(); ?>
+```
+
+저장하고 브라우저를 새로고침합니다. PHP 버전과 로고, 현재의 설정 등을 보여주는 페이지가 나타날 것입니다.
+
+#참고
+ - https://wikidocs.net/3221

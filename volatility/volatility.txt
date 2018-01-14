@@ -13,7 +13,7 @@
 	vol.exe plugin -h
 
 	[프로세스]
-	vol.exe imageinfo -f dump.raw 
+	vol.exe imageinfo -f dump.raw
 	vol.exe -f dump.raw --profile=Win7SP1x86 psscan
 	vol.exe -f dump.raw --profile=Win7SP1x86 pslist
 	vol.exe -f dump.raw --profile=Win7SP1x86 pstree
