@@ -1,0 +1,5 @@
+//text 인자를 파일로 생성
+                using (StreamWriter output = new StreamWriter(localPath + fileName, false, System.Text.Encoding.UTF8))
+                {
+                    output.WriteLine(info);
+                }

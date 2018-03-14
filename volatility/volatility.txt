@@ -43,7 +43,7 @@
 	vol.exe -f dump.raw --profile=Win7SP1x86 ssdt | findstr -i -v win32k.sys | findstr -i -v ntoskrnl.exe
 	
 	[파일추출(패킹 해제)]
-	vol.exe -f dump.raw --profile=Win7SP1x86 procmemdump -p 0000 --dump-dir ./
+	vol.exe -f dump.raw --profile=Win7SP1x86 procdump -p 0000 --dump-dir ./
 	
 	
 	[파일추출]
@@ -72,7 +72,7 @@
 #
 #####################################################################
 
-- volatility.exe -f dump.raw --profile=Win7SP1x64 ssdt | findstr -i -v win32k.sys | findstr -i -v ntoskrnl.exe
+- vol.exe -f dump.raw --profile=Win7SP1x64 ssdt | findstr -i -v win32k.sys | findstr -i -v ntoskrnl.exe
 
 - SSDT는 win32k.sys와 ntoskrnl.exe에 의해서만 관리되는데 위와 같은 명령으로 SSDT후킹을 하는 프로세스를 찾을 수 있다.
 - 또한 gmer.exe 프로그램으로 
@@ -85,7 +85,7 @@
 
 
 
-volatility.exe -f dump.raw imageinfo
+vol.exe -f dump.raw imageinfo
 -----------------------------------------------------------
 
 
@@ -116,7 +116,7 @@ volatility.exe -f dump.raw imageinfo
 #####################################################################
 
 		 
-volatility.exe -f dump.raw --profile=Win7SP1x64 psscan
+vol.exe -f dump.raw --profile=Win7SP1x64 psscan
 ----------------------------------------------------------------------------
 
 
@@ -186,7 +186,7 @@ volatility.exe -f dump.raw --profile=Win7SP1x64 psscan
 #####################################################################
 
 		 
-volatility.exe -f dump.raw --profile=Win7SP1x64 pslist
+vol.exe -f dump.raw --profile=Win7SP1x64 pslist
 ----------------------------------------------------------------------------
 
 Volatility Foundation Volatility Framework 2.6
@@ -247,7 +247,7 @@ Offset(V)          Name                    PID   PPID   Thds     Hnds   Sess  Wo
 #
 # pstree (프로세스 목록을 트리 형식으로 보여줌: 리스트워킹 방식이라서 숨겨진 것 못 찾을 수 있음)
 #
-# volatility.exe -f dump.raw --profile=Win7SP1x64 pstree
+# vol.exe -f dump.raw --profile=Win7SP1x64 pstree
 #
 ###################################################################################################
 
@@ -308,7 +308,7 @@ Offset(V)          Name                    PID   PPID   Thds     Hnds   Sess  Wo
 #
 # psxview (프로세스, 스레드 등 관련 플러그인 종합 실행 후 True False로 결과 반환)
 #
-# volatility.exe -f dump.raw --profile=Win7SP1x64 psxview
+# vol.exe -f dump.raw --profile=Win7SP1x64 psxview
 #
 ###################################################################################################
 
@@ -372,7 +372,7 @@ Offset(V)          Name                    PID   PPID   Thds     Hnds   Sess  Wo
 #
 # netscan
 #
-# volatility.exe -f dump.raw --profile=Win7SP1x64 netscan
+# vol.exe -f dump.raw --profile=Win7SP1x64 netscan
 #
 ###################################################################################################
 
@@ -484,7 +484,7 @@ Offset(V)          Name                    PID   PPID   Thds     Hnds   Sess  Wo
 #
 # filescan
 #
-# volatility.exe -f dump.raw --profile=Win7SP1x64 filescan
+# vol.exe -f dump.raw --profile=Win7SP1x64 filescan
 #
 ###################################################################################################
 
@@ -493,7 +493,7 @@ Offset(V)          Name                    PID   PPID   Thds     Hnds   Sess  Wo
 #
 # dumpfiles
 #
-# volatility.exe -f dump.raw --profile=Win7SP1x64 dumpfiles -Q 0x000000013cf11b50 -D ./
+# vol.exe -f dump.raw --profile=Win7SP1x64 dumpfiles -Q 0x000000013cf11b50 -D ./
 #
 ###################################################################################################
 

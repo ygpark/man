@@ -21,3 +21,9 @@ csv파일 인코딩을 UTF-8로 바꿔야 한다.
 	
 	--DROP TABLE log;
 	--DROP TABLE whois;
+	
+## MFT
+	sqlite3.exe mft.db
+	CREATE TABLE mft (record_number, good, active, record_type, sequence_number, parent_file_rec, parent_file_rec._seq, filename1, std_info_creation_date, std_info_modification_date, std_info_access_date, std_info_entry_date, fn_info_creation_date, fn_info_modification_date, fn_info_access_date, fn_info_entry_date, object_id, birth_volume_id, birth_object_id, birth_domain_id, filename2, fn_info_creation_date, fn_info_modify_date, fn_info_access_date, fn_info_entry_date, filename3, fn_info_creation_date, fn_info_modify_date, fn_info_access_date, fn_info_entry_date, filename4, fn_info_creation_date, fn_info_modify_date, fn_info_access_date, fn_info_entry_date, standard_information, attribute_list, filename, object_id, volume_name, volume_info, data, index_root, index_allocation, bitmap, reparse_point, ea_information, ea, property_set, logged_utility_stream, log/notes, stf_fn_shift, usec_zero, ads);
+	.separator ','
+	.import  mft.csv  mft

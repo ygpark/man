@@ -4,7 +4,7 @@
 
 	sqlite3.exe myDatabase.db
 	.separator ','
-	.output  export.csv
+	.output  파일명.csv
 	SELECT * FROM mytable3;
 	.exit
 

@@ -1,0 +1,24 @@
+1. 레지스트리 키 값 변경
+
+시작 - 실행 - regedit 등으로 레지스트리 편집기를 열어 다음의 키 값을 수정한다.
+키 경로
+HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\Class\{4D36E968-E325-11CE-BFC1-08002BE10318}\0000
+
+ 
+
+값(환경에 따라 다를 수 있음)
+VMware SVGA xx
+키 값을 삭제하면 안 된다. VM관련 키워드만 제거한다.
+
+
+2. .vxm 파일 수정
+.vmx는 가상머신의 설정정보 파일이다. 메모장 등으로 열어서 수정하며, 항상 VMware가 완전 종료된 상태에서 수정하도록 한다.
+다음 여섯 줄을 복사하여 맨 마지막에 추가한다.
+
+monitor_control.restrict_backdoor = "TRUE"
+isolation.tools.getPtrLocation.disable = "TRUE"
+isolation.tools.setPtrLocation.disable = "TRUE"
+isolation.tools.getVersion.disable = "TRUE"
+isolation.tools.setVersion.disable = "TRUE"
+monitor_control.disable_directexec = "TRUE"
+
