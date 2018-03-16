@@ -1,0 +1,22 @@
+
+tshark - 시간 표시 yyyy-mm-dd hhmmss로 바꾸기
+====================
+
+
+1. 와이어샤크에서,
+   [메뉴]-[Perperences] - [Name Resolution] 선택
+
+2. GeoIP 경로 설정
+
+3. 와이어샤크에서,
+   [메뉴]-[Perperences] - [Appearance] - [Columns] 선택
+
+4. 추가
+   Title : "Src Country"
+   Type : Custom
+   Fields : ip.geoip.src_country
+   
+5. 추가
+   Title : "Dst Country"
+   Type : Custom
+   Fields : ip.geoip.dst_country

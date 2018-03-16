@@ -1,0 +1,22 @@
+tshark 엑셀(csv) 형식으로 출력하기
+==================================
+
+
+DNS정보 추출
+------------
+tshark 
+ -r "파일명"
+ -Y "dns"
+ -T fields
+ -e frame.number
+ -e _ws.col.Time
+ -e ip.src
+ -e ip.dst
+ -e _ws.col.SrcPort
+ -e _ws.col.DstPort
+ -e _ws.col.Protocol
+ -e _ws.col.Info
+ -E header=y
+ -E quote=d
+ -E separator=,
+ > dns.csv

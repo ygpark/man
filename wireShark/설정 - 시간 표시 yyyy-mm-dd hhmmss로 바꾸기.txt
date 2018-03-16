@@ -1,0 +1,9 @@
+
+tshark - 시간 표시 yyyy-mm-dd hhmmss로 바꾸기
+====================
+
+
+1. 와이어샤크에서 [Edit]-[Perperences] - [Appearance] - [Columns] 선택
+
+2. [Time] 선택 - Type을 Absolute date as YYYY....로 바꾼다
+

@@ -1,0 +1,66 @@
+
+# !DHCP(67,68), !DHCPv6(546,547) 쓸데없는 것(1900)
+not src port 546 and not src port 547 and not src port 67 and not src port 68 and not dst port 1900
+
+not port 546 and not port 547 and not port 67 and not port 68 and not dst port 1900
+
+# 목적지 IP 주소가 1.2.3.4 인 경우
+
+	dst ip 1.2.3.4
+
+	
+# 목적지 포트 번호가 80 인 경우
+
+	dst port 80
+
+# TCP 포트 번호가 특정 구간인 경우
+
+	tcp portrange 6667-6669
+	
+
+
+
+	
+# 이미지 추출
+
+
+# HTTP
+frame contains "200 OK" && !(ip.src == 125.205.95.238)
+
+# && !(ip.src == 125.205.95.238)
+
+(tcp[13] & 0x02) != 0 # SYN 패킷만 캡쳐하는 경우
+
+image-jfif
+
+frame contains "naver"
+
+host 192.168.0.200   # IP 가 192.168.0.200 에 대해서만 캡쳐하는 경우
+
+http.contains jpg
+http contains cmd.exe
+tcp contains default.ida
+
+net 192.168.0.0/24 또는 net 192.168.0.0 mask 255.255.255.0
+
+eth.addr == 00:30:f9:00:00:01   출발지나 목적지 MAC 주소로 검색
+eth.src == 00:30:f9:00:00:01  출발지 MAC주소 검색
+eth.dst == 00:30:f9:00:00:01  목적지 MAC주소 검색
+
+ip.addr == 10.1.0.1  출발지나 목적지 IP주소로 검색
+ip.src == 10.1.0.1  출발지 IP주소로 검색
+
+tcp.port == 1470  TCP 출발지나 목적지 포트 번호로 검색
+tcp.dstport == 1470  TCP 포트 목적지 포트 번호로 검색
+tcp.srcport == 1470  TCP 포트 출발지 포트 번호로 검색
+
+udp.port == 2000  UDP 출발지나 포트 목적지 포트 번호로 검색
+udp.dstport == 2000  UDP 포트 목적지 포트 번호로 검색
+udp.srcport == 2000  UDP 포트 출발지 포트 번호로 검색 
+
+wlan.addr == 00:30:f9:00:00:01   무선랜 사용 시 출발지나 목적지 MAC 주소로 검색
+wlan.sa ==  00:30:f9:00:00:01  무선랜 사용 시 출발지 MAC 주소로 검색
+wlan.da ==  00:30:f9:00:00:01  무선랜 사용 시 목적지 MAC 주소로 검색
+
+
+

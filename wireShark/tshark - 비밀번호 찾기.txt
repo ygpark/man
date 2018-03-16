@@ -1,0 +1,48 @@
+
+tshark 비밀번호 찾기
+====================
+
+
+1단계. 찾기
+------
+
+```
+tshark -r sample_password.pcap -Y "http.request.method == POST and tcp contains \"pass\""
+
+ 29 109.912967 59.11.88.241 → 47.90.4.233  HTTP 706 POST /admin/login.php?action=login HTTP/1.1  (application/x-www-form-urlencoded)
+ 53 123.902536 59.11.88.241 → 47.90.4.233  HTTP 703 POST /admin/login.php?action=login HTTP/1.1  (application/x-www-form-urlencoded)
+ 68 140.378669 59.11.88.241 → 47.90.4.233  HTTP 701 POST /admin/login.php?action=login HTTP/1.1  (application/x-www-form-urlencoded)
+ 88 302.793359 59.11.88.241 → 47.90.4.233  HTTP 703 POST /admin/login.php?action=login HTTP/1.1  (application/x-www-form-urlencoded)
+108 312.671060 59.11.88.241 → 47.90.4.233  HTTP 703 POST /admin/login.php?action=login HTTP/1.1  (application/x-www-form-urlencoded)
+124 323.088231 59.11.88.241 → 47.90.4.233  HTTP 706 POST /admin/login.php?action=login HTTP/1.1  (application/x-www-form-urlencoded)
+1170 414.402447 59.11.88.241 → 47.90.4.233  HTTP 708 POST /admin/login.php?action=login HTTP/1.1  (application/x-www-form-urlencoded)
+```
+
+2단계 
+------
+
+```
+tshark 
+ -r IP_47.90.4.233__00001_20170102103235.pcap
+ -Y "http.request.method == POST and tcp contains \"pass\""
+ -T fields
+ -e frame.number
+ -e _ws.col.Time
+ -e ip.src
+ -e tcp.srcport
+ -e _ws.col.Protocol
+ -e ip.dst
+ -e tcp.dstport
+ -e http.host
+ -e http.request.uri
+ -e urlencoded-form.key
+ -e urlencoded-form.value
+ -e _ws.col.Info
+ -E header=y
+ -E quote=d
+ -E separator=,
+
+```
+
+노트패드++에서 위 명령줄을 전부 드래그 한 다음 Ctrl+J를 누르면 한줄로 만들어진다.
+

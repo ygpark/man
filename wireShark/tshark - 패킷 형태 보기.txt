@@ -1,0 +1,54 @@
+tshark -r ÆÄÀÏ¸í.pcap -q -z io,phs
+
+===================================================================
+Protocol Hierarchy Statistics
+Filter: 
+
+eth                                      frames:114191 bytes:12737697
+  ip                                     frames:109741 bytes:12470655
+    udp                                  frames:27008 bytes:4397495
+      data                               frames:472 bytes:73082
+      gvsp                               frames:26413 bytes:4304462
+        _ws.malformed                    frames:74 bytes:4878
+      adwin_config                       frames:4 bytes:568
+      ssdp                               frames:35 bytes:7154
+      bootp                              frames:8 bytes:4720
+      dns                                frames:56 bytes:5355
+      nbdgm                              frames:2 bytes:498
+        smb                              frames:2 bytes:498
+          mailslot                       frames:2 bytes:498
+            browser                      frames:2 bytes:498
+      nbns                               frames:18 bytes:1656
+    tcp                                  frames:82711 bytes:8070895
+      data                               frames:54526 bytes:6175453
+      vnc                                frames:368 bytes:24000
+      ssl                                frames:162 bytes:78773
+        tcp.segments                     frames:22 bytes:18640
+          ssl                            frames:13 bytes:9753
+      opsi                               frames:4 bytes:228
+        tcp.segments                     frames:4 bytes:228
+      http                               frames:50 bytes:33744
+        xml                              frames:36 bytes:30426
+          tcp.segments                   frames:14 bytes:18032
+      ndps                               frames:2 bytes:1569
+        _ws.malformed                    frames:1 bytes:75
+          tcp.segments                   frames:1 bytes:75
+        tcp.segments                     frames:1 bytes:1494
+      _ws.malformed                      frames:1 bytes:56
+      ldap                               frames:3 bytes:2838
+        tcp.segments                     frames:2 bytes:2744
+          ldap                           frames:2 bytes:2744
+            ldap                         frames:2 bytes:2744
+              ldap                       frames:1 bytes:1494
+                ldap                     frames:1 bytes:1494
+                  ldap                   frames:1 bytes:1494
+              _ws.malformed              frames:1 bytes:1250
+    icmp                                 frames:22 bytes:2265
+  arp                                    frames:3929 bytes:235668
+  loop                                   frames:260 bytes:15600
+    data                                 frames:260 bytes:15600
+  llc                                    frames:261 bytes:15774
+    stp                                  frames:258 bytes:15480
+    ipx                                  frames:3 bytes:294
+      nbipx                              frames:3 bytes:294
+===================================================================

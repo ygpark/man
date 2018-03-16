@@ -1,0 +1,1 @@
+tshark -r ÆÄÀÏ¸í -T fields -e ip.src -e dns.qry.name -Y "dns.flags.response eq 0"
