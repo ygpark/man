@@ -1,0 +1,15 @@
+﻿# 윈도우즈 레지스트리
+
+## 위치
+
+	C:\WINDOWS\system32\config\default
+	C:\WINDOWS\system32\config\SAM
+	C:\WINDOWS\system32\config\SECURITY
+	C:\WINDOWS\system32\config\software
+	C:\WINDOWS\system32\config\system
+	C:\WINDOWS\system32\config\COMPONENTS
+	C:\Users\cyber\NTUSER.DAT                                        -> cyber.NTUSER.DAT
+	C:\Users\cyber\AppData\Local\Microsoft\Windows\USRCLASS.DAT      -> cyber.USRCLASS.DAT
+	C:\Users\Default\NTUSER.DAT                                      -> Default.NTUSER.DAT
+	C:\Users\Default User\NTUSER.DAT                                 -> Default User.NTUSER.DAT
+	C:\WINDOWS\inf\setupapi.dev.log                                  -> SETUPAPI\setupapi.dev.log
